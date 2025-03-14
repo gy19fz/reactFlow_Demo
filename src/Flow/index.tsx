@@ -13,27 +13,28 @@ import {
   Node,
   type OnConnect,
 } from "@xyflow/react";
-
+import './xy-theme.css'
 import "@xyflow/react/dist/style.css";
-
 import SideBar from './DnDSidebar/SideBar';
 import { DnDProvider, useDnD } from './DnDSidebar/DnDContext';
+import TextUpdaterNode from './CustomNodes/testNode'
+import { Button } from 'antd';
+import { LeftSquareOutlined } from '@ant-design/icons'
 
-// import { initialNodes, nodeTypes, type CustomNodeType } from "./nodes";
-// import { initialEdges, edgeTypes, type CustomEdgeType } from "./edges";
+const nodeTypes = {
+  textUpdater: TextUpdaterNode, // 注册自定义节点类型
+}
 
+let id = 0;
+const getId = () => `dndnode_${id++}`;
 const initialNodes = [
   {
-    id: '1',
+    id: getId(),
     type: 'input',
     data: { label: 'input node' },
     position: { x: 250, y: 5 },
   },
 ];
-
-let id = 0;
-const getId = () => `dndnode_${id++}`;
-
 const DnDFlow = () => {
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<{ label: string }>>(initialNodes);
@@ -54,15 +55,9 @@ const DnDFlow = () => {
   const onDrop = useCallback(
     (event:any) => {
       event.preventDefault();
- 
-      // check if the dropped element is valid
       if (!type) {
         return;
       }
- 
-      // project was renamed to screenToFlowPosition
-      // and you don't need to subtract the reactFlowBounds.left/top anymore
-      // details: https://reactflow.dev/whats-new/2023-11-10
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
@@ -79,26 +74,41 @@ const DnDFlow = () => {
     [screenToFlowPosition, type],
   );
 
+  const checkFlowData = useCallback(() => {
+    console.log('Nodes:', nodes);
+    console.log('Edges:', edges);
+  }, [nodes, edges]);
+
   return (
     <div className="dndflow">
-    <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        fitView
-        style={{ backgroundColor: "#F7F9FB" }}
-      >
-        <Controls />
-        <Background />
-      </ReactFlow>
+      <SideBar />
+      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <div className="reactflow-topBar">
+          <div className="topBar-left">
+            <LeftSquareOutlined className="back-icon"></LeftSquareOutlined>
+            <div>当前流程</div>
+          </div>
+          <div className="topBar-right">
+            <Button type="primary" onClick={checkFlowData}>流程图数据</Button>
+          </div>
+        </div>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          fitView
+          style={{ backgroundColor: "#F7F9FB" }}
+          nodeTypes={nodeTypes}
+        >
+          <Controls />
+          <Background />
+        </ReactFlow>
+      </div>
     </div>
-    <SideBar />
-  </div>
   );
 };
 export default () => (
