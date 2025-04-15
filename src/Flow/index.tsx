@@ -18,7 +18,7 @@ import "@xyflow/react/dist/style.css";
 import SideBar from './DnDSidebar/SideBar';
 import { DnDProvider, useDnD } from './DnDSidebar/DnDContext';
 import TextUpdaterNode from './CustomNodes/testNode'
-import { Button } from 'antd';
+import { Button } from '../components/antdComponents';
 import { LeftSquareOutlined } from '@ant-design/icons'
 
 const nodeTypes = {

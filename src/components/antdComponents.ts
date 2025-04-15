@@ -1,0 +1,1 @@
+export { Button, Input, Modal, Table } from 'antd';
