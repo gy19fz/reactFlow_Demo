@@ -1,1 +1,1 @@
-export { Button, Input, Modal, Table } from 'antd';
+export { Button, Input, Modal, Table, Drawer} from 'antd';
